@@ -1,0 +1,30 @@
+# 맥/윈도우 시스템 파일 무시
+.DS_Store
+Thumbs.db
+
+# VS Code 설정 파일 무시
+.vscode/
+.idea/
+
+# 각 언어별 빌드 결과물 및 라이브러리 무시
+**/node_modules/
+**/dist/
+**/build/
+**/out/
+**/.gradle/
+**/__pycache__/
+**/.venv/
+**/env/
+*.log
+
+# 환경변수 파일 무시 (보안)
+.env
+
+db_data/
+qdrant_data/
+redis_data/
+
+application.yaml
+
+**/npm-debug.log
+**/yarn-error.log
