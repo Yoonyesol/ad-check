@@ -212,6 +212,7 @@ export const useCheckmateStore = create<CheckmateState>((set) => ({
   })),
   showWarning: (count) => set({ isWarningVisible: true, warningCount: count }),
   closeWarning: () => set({ isWarningVisible: false }),
+  setAnalysisStatus: (status) => set({ analysisStatus: status }),
   setCurrentVideo: (id, title, channel) => set((state) => {
     const existing = state.videoStates[id];
     return {
