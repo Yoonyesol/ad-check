@@ -26,19 +26,22 @@ export function SidePanel() {
   return (
     <>
       <div className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-full max-w-sm bg-background border-l-2 border-primary shadow-2xl z-[60] flex flex-col font-pixel">
-        {/* Header */}
-        <div className="p-3 border-b border-border bg-primary/5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <PixelCharacter mood={characterMood} size="sm" />
-            <span className="font-bold text-lg text-foreground">Checkmate</span>
-          </div>
-          <button
-            onClick={closePanel}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors pixel-btn bg-muted cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        
+        {/* Mobile Close Button (화면이 작아 패널이 100%를 차지할 때 내부에 표시) */}
+        <button
+          onClick={closePanel}
+          className="absolute right-3 top-3 w-9 h-9 border-2 border-primary bg-background pixel-btn text-foreground shadow-md z-[61] sm:hidden flex items-center justify-center cursor-pointer"
+        >
+          <X className="w-5 h-5" strokeWidth={2} />
+        </button>
+
+        {/* Floating Close Button (Desktop/Tablet - 패널 왼쪽에 플로팅 위치) */}
+        <button
+          onClick={closePanel}
+          className="absolute -left-12 top-4 w-10 h-10 border-2 border-primary bg-background pixel-btn text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all shadow-md cursor-pointer z-[61] hidden sm:flex items-center justify-center"
+        >
+          <X className="w-6 h-6" strokeWidth={2} />
+        </button>
 
         {/* Video Info */}
         <div className="p-3 border-b border-border bg-muted/50 flex items-center gap-3">

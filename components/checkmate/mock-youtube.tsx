@@ -229,47 +229,46 @@ function AnalysisDashboard({
       <div
         ref={dashboardRef}
         className={cn(
-          "bg-white rounded-[24px] border border-zinc-200 shadow-xl overflow-hidden flex flex-col relative transition-all duration-300",
+          "bg-white pixel-border overflow-hidden flex flex-col relative transition-all duration-300 font-pixel",
           className
         )}
       >
         {/* Top Section */}
-        <div className={cn("relative pt-12 pb-10 flex items-center justify-center bg-gradient-to-br", gradient)}>
+        <div className={cn("relative pt-8 pb-6 flex items-center justify-center border-b-[2px] border-black/20 bg-gradient-to-br", gradient)}>
           <button
             onClick={closeWarning}
-            className="absolute top-3 right-3 p-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="absolute top-2 right-2 p-1 text-white hover:bg-black/20 transition-all cursor-pointer rounded-md"
           >
             <X className="w-5 h-5" />
           </button>
           
-          <div className="bg-white/20 p-5 rounded-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)]">
-            <Icon className="w-16 h-16 text-white" strokeWidth={1.5} />
+          <div className="p-3 bg-black/20 rounded-md">
+            <Icon className="w-12 h-12 text-white" strokeWidth={2} />
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="flex flex-col items-center pt-8 pb-4 px-6">
-          <h3 className="text-[20px] font-semibold text-zinc-900 mb-2 tracking-tight flex items-center justify-center gap-1.5">
-            <span className={cn("font-black tracking-widest", textColor)}>
+        <div className="flex flex-col items-center pt-5 pb-3 px-4 bg-zinc-50">
+          <h3 className="text-[16px] text-black mb-2 flex items-center justify-center gap-2 text-center tracking-wide">
+            <span className={cn("inline-block px-1.5 py-0.5 text-[14px] font-bold", textColor)}>
               [{prefix}]
             </span>
-            <span>{title}</span>
+            <span className="font-bold">{title}</span>
           </h3>
-          <p className="text-[14px] text-zinc-500 text-center leading-relaxed font-medium">
+          <p className="text-[12px] text-zinc-600 text-center leading-relaxed font-medium">
             {desc}
           </p>
         </div>
 
         {/* Action Button */}
-        <button
-          onClick={handleAction}
-          className={cn(
-            "w-full border-t border-zinc-100 py-4 mt-2 text-[16px] transition-colors hover:bg-zinc-50 active:bg-zinc-100 focus:outline-none cursor-pointer",
-            textColor
-          )}
-        >
-          {btnText}
-        </button>
+        <div className="p-4 pt-1 bg-zinc-50">
+          <button
+            onClick={handleAction}
+            className="w-full bg-[#fde047] text-black py-2.5 text-[15px] transition-transform active:translate-y-1 hover:bg-[#facc15] cursor-pointer pixel-btn"
+          >
+            {btnText}
+          </button>
+        </div>
       </div>
     );
   }
@@ -278,16 +277,16 @@ function AnalysisDashboard({
     <div
       ref={dashboardRef}
       className={cn(
-        "bg-white p-4 rounded-[24px] border border-zinc-200 shadow-xl flex flex-col items-center gap-2 relative",
+        "bg-white p-3 pixel-border flex flex-col items-center gap-1.5 relative font-pixel",
         className,
       )}
     >
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
+          className="absolute top-2 right-2 p-1 text-zinc-400 hover:text-black transition-colors cursor-pointer rounded-md"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       )}
       <button
@@ -295,7 +294,7 @@ function AnalysisDashboard({
           openPanel();
           onClose?.();
         }}
-        className="relative transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        className="relative transition-transform active:scale-95 cursor-pointer mt-2"
       >
         <PixelCharacter size="lg" />
         <AnimatePresence>
@@ -321,54 +320,66 @@ function AnalysisDashboard({
           )}
         </AnimatePresence>
       </button>
-      <div className="w-full flex flex-col gap-3">
-        <button
-          onClick={() => startAnalysis()}
-          disabled={analysisStatus !== "idle"}
-          className={cn(
-            "w-full py-3.5 rounded-2xl text-[13px] font-bold transition-all cursor-pointer disabled:cursor-default",
-            analysisStatus === "idle"
-              ? "bg-black text-white hover:bg-zinc-800"
-              : "bg-zinc-100 text-zinc-500",
-          )}
-        >
-          {analysisStatus === "idle"
-            ? "스캔하기"
-            : analysisStatus === "complete"
-              ? "분석 완료"
-              : "팩트체크 진행 중..."}
-        </button>
-        {analysisStatus !== "idle" && (
-          <div className="flex flex-col gap-2 px-1">
-            <div className="flex items-center gap-2 text-[11px] font-bold text-zinc-600">
-              {analysisStatus === "complete" ? (
-                <CheckCircle2 className="w-3 h-3 text-blue-500" />
-              ) : (
-                <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
-              )}
-              <span>{statusMsg}</span>
+      <div className="w-full flex flex-col justify-center min-h-[50px] mt-2">
+        {/* 1. 기본 상태 (IDLE) */}
+        {analysisStatus === "idle" && (
+          <button
+            onClick={() => startAnalysis()}
+            className="w-full bg-blue-500 text-white py-2.5 px-3 text-[14px] tracking-wide transition-transform hover:bg-blue-600 active:translate-y-1 cursor-pointer pixel-btn"
+          >
+            스캔 시작
+          </button>
+        )}
+
+        {/* 2. 진행 상태 (ANALYZING) */}
+        {analysisStatus !== "idle" && analysisStatus !== "complete" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-1.5 px-1 pb-1"
+          >
+            <div className="flex items-center justify-between text-[11px] text-zinc-900 px-0.5">
+              <div className="flex items-center gap-1.5 tracking-widest">
+                <span className="animate-pulse">{statusMsg}</span>
+              </div>
             </div>
-            <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+            <div className="h-4 w-full bg-zinc-200 p-0.5 pixel-border">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{
-                  width: analysisStatus === "complete" ? "100%" : "60%",
+                  width:
+                    analysisStatus === "detecting"
+                      ? "25%"
+                      : analysisStatus === "analyzing_transcript"
+                        ? "50%"
+                        : analysisStatus === "analyzing_claims"
+                          ? "75%"
+                          : "90%",
                 }}
-                className="h-full bg-blue-500"
+                transition={{ duration: 0.5 }}
+                className="h-full bg-green-500 transition-all duration-300"
               />
             </div>
-          </div>
+          </motion.div>
         )}
+
+        {/* 3. 완료 상태 (COMPLETE) */}
         {analysisStatus === "complete" && (
-          <button
-            onClick={() => {
-              openPanel();
-              onClose?.();
-            }}
-            className="w-full py-3 bg-blue-50 text-blue-600 rounded-2xl text-[12px] font-bold cursor-pointer"
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-2"
           >
-            리포트 확인
-          </button>
+            <button
+              onClick={() => {
+                openPanel();
+                onClose?.();
+              }}
+              className="w-full bg-purple-500 text-white py-2.5 text-[14px] transition-transform hover:bg-purple-600 flex items-center justify-center gap-2 active:translate-y-1 cursor-pointer tracking-wide pixel-btn"
+            >
+              리포트 확인
+            </button>
+          </motion.div>
         )}
       </div>
     </div>
@@ -382,6 +393,7 @@ export function MockYoutube() {
     closePanel,
     analysisStatus,
     overallVerdict,
+    startAnalysis,
   } = useCheckmateStore();
   const [isSidebarWide, setIsSidebarWide] = useState(true);
   const [view, setView] = useState<"home" | "shorts" | "watch">("home");
@@ -621,11 +633,14 @@ export function MockYoutube() {
                         </div>
                       </div>
                       <div className="flex flex-col gap-4 pb-4">
-                        <div className="lg:hidden">
+                        <div className="xl:hidden">
                           <ShortsAction
                             icon={ShieldCheck}
                             label="팩트체크"
-                            onClick={() => setIsMobileModalOpen(true)}
+                            onClick={() => {
+                              setIsMobileModalOpen(true);
+                              if (analysisStatus === "idle") startAnalysis();
+                            }}
                           />
                         </div>
                         <ShortsAction icon={ThumbsUp} label={v.likes} />
@@ -637,8 +652,8 @@ export function MockYoutube() {
                   </section>
                 ))}
               </div>
-              <div className="fixed top-24 right-10 z-50 hidden lg:block">
-                <AnalysisDashboard className="w-60" />
+              <div className="fixed top-24 right-10 z-50 hidden xl:block">
+                <AnalysisDashboard className="w-80" />
               </div>
             </div>
           )}
@@ -721,7 +736,7 @@ export function MockYoutube() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm xl:hidden"
             onClick={() => setIsMobileModalOpen(false)}
           >
             <div onClick={(e) => e.stopPropagation()}>
