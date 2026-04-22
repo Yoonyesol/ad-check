@@ -114,6 +114,15 @@ const HOME_GRID_VIDEOS = [
     thumbnail: "https://api.dicebear.com/7.x/shapes/svg?seed=japan",
     avatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=news",
   },
+  {
+    id: "h5",
+    title: "[단독] UFO 출몰 영상, 드디어 밝혀진 진실은?",
+    channel: "미스터리 X",
+    views: "85만회",
+    time: "3시간 전",
+    thumbnail: "https://api.dicebear.com/7.x/shapes/svg?seed=ufo",
+    avatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=mystery",
+  },
 ];
 
 const CATEGORIES = [
@@ -193,8 +202,8 @@ function AnalysisDashboard({
       btnText: "판단 근거 보기",
     },
     unknown: {
-      gradient: "from-indigo-400 to-blue-500", // Slightly different gradient for HOLD to distinguish from PASS
-      textColor: "text-indigo-600",
+      gradient: "from-amber-400 to-amber-600",
+      textColor: "text-amber-600",
       icon: HelpCircle,
       prefix: "보류",
       title: "판단 보류 안내",
@@ -220,7 +229,7 @@ function AnalysisDashboard({
       <div
         ref={dashboardRef}
         className={cn(
-          "w-full min-w-[280px] bg-white rounded-[16px] shadow-lg overflow-hidden flex flex-col relative transition-all duration-300",
+          "bg-white rounded-[24px] border border-zinc-200 shadow-xl overflow-hidden flex flex-col relative transition-all duration-300",
           className
         )}
       >

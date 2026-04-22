@@ -69,7 +69,7 @@ export function ResponseModal() {
         {/* Close Button */}
         <button
           onClick={closeResponseModal}
-          className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -104,11 +104,11 @@ export function ResponseModal() {
                     onClick={() => toggleAction(action.id)}
                     disabled={isProcessing}
                     className={cn(
-                      "w-full p-3 border pixel-border flex items-start gap-3 text-left transition-all",
+                      "w-full p-3 border pixel-border flex items-start gap-3 text-left transition-all cursor-pointer disabled:cursor-not-allowed",
                       selectedActions.includes(action.id)
                         ? "bg-primary/10 border-primary"
                         : "bg-card border-border hover:bg-muted",
-                      isProcessing && "opacity-50 cursor-not-allowed"
+                      isProcessing && "opacity-50"
                     )}
                   >
                     <div className={cn(
@@ -135,9 +135,9 @@ export function ResponseModal() {
                 onClick={handleExecute}
                 disabled={selectedActions.length === 0 || isProcessing}
                 className={cn(
-                  "w-full py-3 px-4 font-bold pixel-btn flex items-center justify-center gap-2 transition-all",
+                  "w-full py-3 px-4 font-bold pixel-btn flex items-center justify-center gap-2 transition-all cursor-pointer disabled:cursor-not-allowed",
                   selectedActions.length === 0 || isProcessing
-                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    ? "bg-muted text-muted-foreground"
                     : "bg-primary text-primary-foreground hover:opacity-90"
                 )}
               >
@@ -157,7 +157,7 @@ export function ResponseModal() {
               <button
                 onClick={closeResponseModal}
                 disabled={isProcessing}
-                className="w-full py-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2"
+                className="w-full py-2 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2 cursor-pointer disabled:cursor-not-allowed"
               >
                 취소
               </button>

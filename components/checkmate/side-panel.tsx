@@ -34,7 +34,7 @@ export function SidePanel() {
           </div>
           <button
             onClick={closePanel}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors pixel-btn bg-muted"
+            className="p-1 text-muted-foreground hover:text-foreground transition-colors pixel-btn bg-muted cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -56,7 +56,7 @@ export function SidePanel() {
           <button
             onClick={() => setActiveTab('report')}
             className={cn(
-              "flex-1 py-3 px-4 text-sm font-bold flex items-center justify-center gap-2 transition-all",
+              "flex-1 py-3 px-4 text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
               activeTab === 'report'
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:text-foreground"
@@ -68,7 +68,7 @@ export function SidePanel() {
           <button
             onClick={() => setActiveTab('community')}
             className={cn(
-              "flex-1 py-3 px-4 text-sm font-bold flex items-center justify-center gap-2 transition-all",
+              "flex-1 py-3 px-4 text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
               activeTab === 'community'
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:text-foreground"

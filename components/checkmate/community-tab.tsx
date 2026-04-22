@@ -59,7 +59,7 @@ function WantedCard({ card }: { card: WantedCardType }) {
           onClick={() => !hasVoted && voteOnCard(card.id, 'true')}
           disabled={hasVoted}
           className={cn(
-            "flex-1 py-2 px-3 text-xs font-bold pixel-btn flex items-center justify-center gap-1 transition-all",
+            "flex-1 py-2 px-3 text-xs font-bold pixel-btn flex items-center justify-center gap-1 transition-all cursor-pointer disabled:cursor-default",
             hasVoted && card.userVote === 'true'
               ? "bg-success text-success-foreground"
               : hasVoted
@@ -74,7 +74,7 @@ function WantedCard({ card }: { card: WantedCardType }) {
           onClick={() => !hasVoted && voteOnCard(card.id, 'fake')}
           disabled={hasVoted}
           className={cn(
-            "flex-1 py-2 px-3 text-xs font-bold pixel-btn flex items-center justify-center gap-1 transition-all",
+            "flex-1 py-2 px-3 text-xs font-bold pixel-btn flex items-center justify-center gap-1 transition-all cursor-pointer disabled:cursor-default",
             hasVoted && card.userVote === 'fake'
               ? "bg-destructive text-destructive-foreground"
               : hasVoted
@@ -88,7 +88,7 @@ function WantedCard({ card }: { card: WantedCardType }) {
       </div>
 
       {/* Evidence Link */}
-      <button className="w-full mt-2 py-1.5 px-3 text-xs text-primary bg-primary/10 border border-primary/20 pixel-btn flex items-center justify-center gap-1 hover:bg-primary/20 transition-all">
+      <button className="w-full mt-2 py-1.5 px-3 text-xs text-primary bg-primary/10 border border-primary/20 pixel-btn flex items-center justify-center gap-1 hover:bg-primary/20 transition-all cursor-pointer">
         <ExternalLink className="w-3 h-3" />
         반박 근거 제출
       </button>
@@ -152,7 +152,7 @@ function ChatRoom() {
         />
         <button
           onClick={handleSend}
-          className="px-3 py-1 bg-primary text-primary-foreground pixel-btn"
+          className="px-3 py-1 bg-primary text-primary-foreground pixel-btn cursor-pointer"
         >
           <Send className="w-3 h-3" />
         </button>
@@ -182,7 +182,7 @@ export function CommunityTab() {
       <ChatRoom />
 
       {/* Report Button */}
-      <button className="w-full py-3 px-4 bg-warning text-warning-foreground font-bold pixel-btn flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+      <button className="w-full py-3 px-4 bg-warning text-warning-foreground font-bold pixel-btn flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cursor-pointer">
         <Plus className="w-5 h-5" />
         나도 허위 영상 제보하기
       </button>

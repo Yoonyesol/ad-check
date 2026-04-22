@@ -136,7 +136,7 @@ export function ReportTab() {
       {/* Response Action Button */}
       <button
         onClick={openResponseModal}
-        className="w-full py-3 px-4 bg-primary text-primary-foreground font-bold pixel-btn flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        className="w-full py-3 px-4 bg-primary text-primary-foreground font-bold pixel-btn flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cursor-pointer"
       >
         <Shield className="w-5 h-5" />
         🚨 원터치 팩트체크 대응
