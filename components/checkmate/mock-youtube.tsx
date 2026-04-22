@@ -27,6 +27,9 @@ import {
   CheckCircle2,
   Loader2,
   X,
+  AlertTriangle,
+  HelpCircle,
+  ArrowRight,
 } from "lucide-react";
 import { useCheckmateStore } from "@/lib/store";
 import { PixelOfficer, PixelCharacter } from "./pixel-character";
@@ -131,8 +134,24 @@ function AnalysisDashboard({
   className?: string;
   onClose?: () => void;
 }) {
-  const { startAnalysis, analysisStatus, overallVerdict, openPanel } =
+  const { startAnalysis, analysisStatus, overallVerdict, openPanel, isWarningVisible, warningCount, closeWarning, setActiveTab } =
     useCheckmateStore();
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isWarningVisible &&
+        dashboardRef.current &&
+        !dashboardRef.current.contains(event.target as Node)
+      ) {
+        closeWarning();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isWarningVisible, closeWarning]);
+
   const statusMsg = useMemo(() => {
     switch (analysisStatus) {
       case "detecting":
@@ -150,8 +169,105 @@ function AnalysisDashboard({
     }
   }, [analysisStatus]);
 
+  const warningConfig = {
+    safe: {
+      gradient: "from-blue-400 to-blue-600",
+      textColor: "text-blue-600", // Adjusted for contrast
+      icon: ShieldCheck,
+      prefix: "신뢰",
+      title: "검증된 신뢰 정보",
+      desc: "Checkmate 분석 결과, 신뢰할 수 있는 사실로 확인되었습니다.",
+      btnText: "지금 확인",
+    },
+    warning: {
+      gradient: "from-red-400 to-red-600",
+      textColor: "text-red-600",
+      icon: AlertTriangle,
+      prefix: "주의",
+      title: "허위/과장 정보 주의",
+      desc: (
+        <>
+          이 영상에서 <span className="font-bold text-red-600">{warningCount}건</span>의 허위 의심 문장이 발견되었습니다.
+        </>
+      ),
+      btnText: "판단 근거 보기",
+    },
+    unknown: {
+      gradient: "from-indigo-400 to-blue-500", // Slightly different gradient for HOLD to distinguish from PASS
+      textColor: "text-indigo-600",
+      icon: HelpCircle,
+      prefix: "보류",
+      title: "판단 보류 안내",
+      desc: "확보된 정보만으로는 AI 판독이 어렵습니다. 커뮤니티 수배를 통해 다른 유저들과 함께 진위를 검증해 보세요.",
+      btnText: "게시판으로 이동",
+    },
+  };
+
+  const handleAction = () => {
+    closeWarning();
+    if (overallVerdict === "unknown") {
+      setActiveTab("community");
+    } else {
+      setActiveTab("report");
+    }
+    openPanel();
+  };
+
+  if (isWarningVisible) {
+    const { gradient, textColor, icon: Icon, prefix, title, desc, btnText } =
+      warningConfig[overallVerdict];
+    return (
+      <div
+        ref={dashboardRef}
+        className={cn(
+          "w-full min-w-[280px] bg-white rounded-[16px] shadow-lg overflow-hidden flex flex-col relative transition-all duration-300",
+          className
+        )}
+      >
+        {/* Top Section */}
+        <div className={cn("relative pt-12 pb-10 flex items-center justify-center bg-gradient-to-br", gradient)}>
+          <button
+            onClick={closeWarning}
+            className="absolute top-3 right-3 p-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          
+          <div className="bg-white/20 p-5 rounded-xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)]">
+            <Icon className="w-16 h-16 text-white" strokeWidth={1.5} />
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="flex flex-col items-center pt-8 pb-4 px-6">
+          <h3 className="text-[20px] font-semibold text-zinc-900 mb-2 tracking-tight flex items-center justify-center gap-1.5">
+            <span className={cn("font-black tracking-widest", textColor)}>
+              [{prefix}]
+            </span>
+            <span>{title}</span>
+          </h3>
+          <p className="text-[14px] text-zinc-500 text-center leading-relaxed font-medium">
+            {desc}
+          </p>
+        </div>
+
+        {/* Action Button */}
+        <button
+          onClick={handleAction}
+          className={cn(
+            "w-full border-t border-zinc-100 py-4 mt-2 text-[16px] transition-colors hover:bg-zinc-50 active:bg-zinc-100 focus:outline-none cursor-pointer",
+            textColor
+          )}
+        >
+          {btnText}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div
+      ref={dashboardRef}
       className={cn(
         "bg-white p-4 rounded-[24px] border border-zinc-200 shadow-xl flex flex-col items-center gap-2 relative",
         className,
@@ -160,7 +276,7 @@ function AnalysisDashboard({
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-zinc-600 transition-colors"
+          className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -170,7 +286,7 @@ function AnalysisDashboard({
           openPanel();
           onClose?.();
         }}
-        className="relative transition-all hover:scale-105 active:scale-95"
+        className="relative transition-all hover:scale-105 active:scale-95 cursor-pointer"
       >
         <PixelCharacter size="lg" />
         <AnimatePresence>
@@ -201,7 +317,7 @@ function AnalysisDashboard({
           onClick={() => startAnalysis()}
           disabled={analysisStatus !== "idle"}
           className={cn(
-            "w-full py-3.5 rounded-2xl text-[13px] font-bold transition-all",
+            "w-full py-3.5 rounded-2xl text-[13px] font-bold transition-all cursor-pointer disabled:cursor-default",
             analysisStatus === "idle"
               ? "bg-black text-white hover:bg-zinc-800"
               : "bg-zinc-100 text-zinc-500",
@@ -240,7 +356,7 @@ function AnalysisDashboard({
               openPanel();
               onClose?.();
             }}
-            className="w-full py-3 bg-blue-50 text-blue-600 rounded-2xl text-[12px] font-bold"
+            className="w-full py-3 bg-blue-50 text-blue-600 rounded-2xl text-[12px] font-bold cursor-pointer"
           >
             리포트 확인
           </button>
@@ -298,7 +414,7 @@ export function MockYoutube() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsSidebarWide(!isSidebarWide)}
-            className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
+            className="p-2 hover:bg-zinc-100 rounded-full transition-colors cursor-pointer"
           >
             <Menu className="w-6 h-6" />
           </button>
@@ -320,7 +436,7 @@ export function MockYoutube() {
           <Search className="w-5 h-5 text-zinc-500" />
         </div>
         <div className="flex items-center gap-3">
-          <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 border rounded-full text-xs font-bold hover:bg-zinc-50">
+          <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 border rounded-full text-xs font-bold hover:bg-zinc-50 cursor-pointer">
             <Plus className="w-4 h-4" />
             만들기
           </button>
@@ -373,7 +489,7 @@ export function MockYoutube() {
                   <button
                     key={cat}
                     className={cn(
-                      "px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap",
+                      "px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap cursor-pointer",
                       cat === "전체"
                         ? "bg-black text-white"
                         : "bg-zinc-100 hover:bg-zinc-200",
@@ -482,7 +598,7 @@ export function MockYoutube() {
                             <span className="font-bold text-sm">
                               {v.channel}
                             </span>
-                            <button className="bg-white text-black px-3 py-1 rounded-full text-xs font-bold ml-1">
+                            <button className="bg-white text-black px-3 py-1 rounded-full text-xs font-bold ml-1 cursor-pointer">
                               구독
                             </button>
                           </div>
@@ -545,7 +661,7 @@ export function MockYoutube() {
                       </p>
                       <p className="text-xs text-zinc-500">구독자 25만명</p>
                     </div>
-                    <button className="bg-black text-white px-4 py-2 rounded-full text-sm font-bold ml-2">
+                    <button className="bg-black text-white px-4 py-2 rounded-full text-sm font-bold ml-2 cursor-pointer">
                       구독
                     </button>
                   </div>
@@ -629,7 +745,7 @@ function SidebarButton({
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex transition-colors items-center",
+        "w-full flex transition-colors items-center cursor-pointer",
         isWide
           ? "flex-row gap-6 px-3 py-2.5 rounded-xl text-sm"
           : "flex-col gap-1 py-4 text-[10px]",

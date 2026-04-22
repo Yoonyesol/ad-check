@@ -13,7 +13,6 @@ export default function Page() {
 
       {/* Checkmate Extension Components */}
       <SidePanel />
-      <WarningPopup />
     </div>
   )
 }
